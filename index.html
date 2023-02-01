@@ -1,0 +1,148 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>15</title>
+  <style>
+    #field table td.empty {
+      background-color: #3366CC;
+      color: #3366CC;
+    }
+    #field table td {
+      background-color: #ffffff;
+      text-align: center;
+      vertical-align: middle;
+      height: 100px;
+      width: 100px;
+    }
+    @media screen and (max-width: 768px) {
+      #field table td {
+        height: 23vmin;
+        width: 23vmin;
+      }
+    }
+    #field table {
+      background-color: #3366CC;
+      border-spacing: 3px;
+      color: #3366CC;
+      font-size: 2rem;
+    }
+  </style>
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script>
+    $(document).ready(function () {
+      var patnash = {
+        flask_amount: 12,
+        flask_capacity: 4,
+        moveFromFlaskId: null,
+        stepCounter: 0,
+        field: [],
+        isEmptyFlask: function (flaskId) { return this.field[flaskId].every(el => el === 0) },
+        lastNonZeroElFromFlask: function (flaskId) {
+          const nonZero = (element) => element !== 0;
+          // console.log(flaskId, this.field[flaskId])
+          return this.field[flaskId].findLast(nonZero);
+         },
+        firstEmptyIndexFromFlask: function (flaskId) {
+          const isZero = (element) => element === 0;
+          // console.log(flaskId, this.field[flaskId])
+          return this.field[flaskId].findIndex(isZero);
+         },
+        isFitableToMoveTo: function (flaskId, el) {
+          return this.isEmptyFlask(flaskId) || (new RegExp(`(,${el})+(,0)+$`)).test("," + this.field[flaskId].join())
+        },
+        addEmptyFlask: function () { this.field.push(new Array(this.flask_capacity).fill(0)) },
+        arrFinish: function () { return Array.apply(0, {length: (this.n * this.m)}).map(function (x, y) { return y; }) },
+        init: function () {
+          this.createField();
+          this.drawField();
+          this.bindHandlers();
+        },
+        createField: function () {
+          // var shuffle = function (o) {
+          //   for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+          //   return o;
+          // };
+          // var sArr = shuffle(this.arrFinish());
+          // for (var i = 0; i < this.m; i++) {
+          //   this.field[i] = [];
+          //   for (var j = 0; j < this.n; j++) {
+          //     this.field[i][j] = sArr[i * this.n + j];
+          //   }
+          // }
+          this.field = [[9, 10, 6, 1], [13, 2, 12, 4], [12, 1, 8, 2], [7, 4, 8, 9], [13, 7, 5, 2], [13, 12, 6, 2], [13, 11, 6, 10], [13, 11, 3, 4], [1, 11, 5, 5], [10, 8, 7, 3], [13, 9, 1, 6], [5, 3, 7, 4]];
+          this.addEmptyFlask();
+          this.addEmptyFlask();
+        },
+        drawField: function () {
+          var htmlString = '<table>';
+          for (var i = this.flask_capacity - 1; i >= 0; i--) {
+            htmlString += '<tr>';
+            for (var j = 0; j < this.field.length; j++) {
+              var isEmpty = this.field[j][i] == 0 ? ' class=empty' : '';
+              htmlString += "<td id=" + [j, i].join('-') + isEmpty + ">" +
+                  this.field[j][i] + "</td>";
+            };
+            htmlString += '</tr>';
+          };
+          htmlString += '</table>';
+          $('#field').html(htmlString);
+        },
+        bindHandlers: function () {
+          $('#field td').on('click', function () {
+            let id = $(this).attr('id').split('-');
+            console.log(Number(id[0]), Number(id[1]));
+            let flaskId = Number(id[0]);
+            if (patnash.moveFromFlaskId == null) {
+              if (patnash.isEmptyFlask(flaskId)) { console.log("Empty");return;}
+              patnash.moveFromFlaskId = flaskId;
+            } else {
+              el = patnash.lastNonZeroElFromFlask(patnash.moveFromFlaskId);
+              console.log("el:", el);
+              if (patnash.isFitableToMoveTo(flaskId, el)) {
+                patnash.doMove(patnash.moveFromFlaskId, flaskId);
+                patnash.moveFromFlaskId = null;
+              } else {
+                console.log("Unfitable");
+                patnash.moveFromFlaskId = null;
+              }
+            }
+          });
+        },
+        unbindHandlers: function () {
+          $('#field td').unbind("click");
+        },
+        doMove: function (fromFlaskId, toFlaskId) {
+          console.log("doMove", fromFlaskId, toFlaskId);
+
+          let el = this.lastNonZeroElFromFlask(fromFlaskId);
+
+          indexFrom = this.field[fromFlaskId].findLastIndex(e => el === e)
+          indexTo = this.firstEmptyIndexFromFlask(toFlaskId)
+          this.field[fromFlaskId][indexFrom] = 0
+          this.field[toFlaskId][indexTo] = el
+          $('td#' + toFlaskId  + '-' + indexTo).removeClass('empty').text(el);
+          $('td#' + fromFlaskId + '-' + indexFrom).addClass('empty').text(0);
+
+          return;
+          if(this.isFinish()) {
+            $('#feedback').text('Finished on step ' + patnash.stepCounter);
+            this.unbindHandlers();
+          };
+        },
+        isFinish: function () {
+          var notZero = function(el) { return el != 0; };
+          var flatten = function(arr) { return arr.reduce(function(a, b){ return a.concat(b);}) };
+          return flatten(this.field).filter(notZero).join() == this.arrFinish().filter(notZero).join();
+        }
+      };
+      patnash.init();
+    });
+  </script>
+</head>
+<body>
+<div id='field'></div>
+<div id='feedback'></div>
+</body>
+</html>
