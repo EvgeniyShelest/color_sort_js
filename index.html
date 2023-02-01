@@ -99,15 +99,8 @@
               patnash.moveFromFlaskId = flaskId;
             } else {
               if (flaskId === patnash.moveFromFlaskId) { console.log("The same flask");return;}
-              el = patnash.lastNonZeroElFromFlask(patnash.moveFromFlaskId);
-              console.log("el:", el);
-              if (patnash.isFitableToMoveTo(flaskId, el)) {
-                patnash.doMove(patnash.moveFromFlaskId, flaskId);
-                patnash.moveFromFlaskId = null;
-              } else {
-                console.log("Unfitable");
-                patnash.moveFromFlaskId = null;
-              }
+              patnash.doMove(patnash.moveFromFlaskId, flaskId);
+              patnash.moveFromFlaskId = null;
             }
           });
         },
@@ -116,17 +109,22 @@
         },
         doMove: function (fromFlaskId, toFlaskId) {
           console.log("doMove", fromFlaskId, toFlaskId);
-
           let el = this.lastNonZeroElFromFlask(fromFlaskId);
-
-          indexFrom = this.field[fromFlaskId].findLastIndex(e => el === e)
-          indexTo = this.firstEmptyIndexFromFlask(toFlaskId)
-          this.field[fromFlaskId][indexFrom] = 0
-          this.field[toFlaskId][indexTo] = el
+          console.log("el:", el);
+          if (!this.isFitableToMoveTo(toFlaskId, el)) {
+            console.log("Unfitable");
+            return;
+          }
+          indexFrom = this.field[fromFlaskId].findLastIndex(e => el === e);
+          indexTo = this.firstEmptyIndexFromFlask(toFlaskId);
+          this.field[fromFlaskId][indexFrom] = 0;
+          this.field[toFlaskId][indexTo] = el;
           $('td#' + toFlaskId  + '-' + indexTo).removeClass('empty').text(el);
           $('td#' + fromFlaskId + '-' + indexFrom).addClass('empty').text(0);
           patnash.stepCounter += 1;
           $('#feedback').text('step:' + patnash.stepCounter);
+
+          if (el === this.lastNonZeroElFromFlask(fromFlaskId)) this.doMove(fromFlaskId, toFlaskId);
           return;
           if(this.isFinish()) {
             $('#feedback').text('Finished on step ' + patnash.stepCounter);
