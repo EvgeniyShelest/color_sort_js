@@ -125,7 +125,8 @@
           this.field[toFlaskId][indexTo] = el
           $('td#' + toFlaskId  + '-' + indexTo).removeClass('empty').text(el);
           $('td#' + fromFlaskId + '-' + indexFrom).addClass('empty').text(0);
-
+          patnash.stepCounter += 1;
+          $('#feedback').text('step:' + patnash.stepCounter);
           return;
           if(this.isFinish()) {
             $('#feedback').text('Finished on step ' + patnash.stepCounter);
