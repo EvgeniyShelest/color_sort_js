@@ -60,18 +60,22 @@
           this.bindHandlers();
         },
         createField: function () {
-          // var shuffle = function (o) {
-          //   for (var j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
-          //   return o;
-          // };
-          // var sArr = shuffle(this.arrFinish());
-          // for (var i = 0; i < this.m; i++) {
-          //   this.field[i] = [];
-          //   for (var j = 0; j < this.n; j++) {
-          //     this.field[i][j] = sArr[i * this.n + j];
-          //   }
-          // }
-          this.field = [[9, 10, 6, 1], [13, 2, 12, 4], [12, 1, 8, 2], [7, 4, 8, 9], [13, 7, 5, 2], [13, 12, 6, 2], [13, 11, 6, 10], [13, 11, 3, 4], [1, 11, 5, 5], [10, 8, 7, 3], [13, 9, 1, 6], [5, 3, 7, 4]];
+          const arrStart = Array.apply(0, { length: this.flask_amount })
+                              .map((x, y) => { // Use => here, because function(x,y) changes `this` inside
+                                return new Array(this.flask_capacity).fill(y+1)
+                              });
+          const shuffle = function (o) {
+            for (let j, x, i = o.length; i; j = Math.floor(Math.random() * i), x = o[--i], o[i] = o[j], o[j] = x);
+            return o;
+          };
+          const shuffledArr = shuffle(arrStart.flat());
+          for (let i = 0; i < this.flask_amount; i++) {
+            this.field[i] = [];
+            for (let j = 0; j < this.flask_capacity; j++) {
+              this.field[i][j] = shuffledArr[i * this.flask_capacity + j];
+            }
+          }
+          // this.field = [[9, 10, 6, 1], [13, 2, 12, 4], [12, 1, 8, 2], [7, 4, 8, 9], [13, 7, 5, 2], [13, 12, 6, 2], [13, 11, 6, 10], [13, 11, 3, 4], [1, 11, 5, 5], [10, 8, 7, 3], [13, 9, 1, 6], [5, 3, 7, 4]];
           this.addEmptyFlask();
           this.addEmptyFlask();
         },
