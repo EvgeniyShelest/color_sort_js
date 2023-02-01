@@ -98,6 +98,7 @@
               if (patnash.isEmptyFlask(flaskId)) { console.log("Empty");return;}
               patnash.moveFromFlaskId = flaskId;
             } else {
+              if (flaskId === patnash.moveFromFlaskId) { console.log("The same flask");return;}
               el = patnash.lastNonZeroElFromFlask(patnash.moveFromFlaskId);
               console.log("el:", el);
               if (patnash.isFitableToMoveTo(flaskId, el)) {
