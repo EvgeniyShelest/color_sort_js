@@ -39,6 +39,7 @@
         stepCounter: 0,
         field: [],
         isEmptyFlask: function (flaskId) { return this.field[flaskId].every(el => el === 0) },
+        isMonofilledFlask: function (flask) { return flask.slice(1,).every(el => el === flask[0]) },
         lastNonZeroElFromFlask: function (flaskId) {
           const nonZero = (element) => element !== 0;
           // console.log(flaskId, this.field[flaskId])
@@ -53,7 +54,6 @@
           return this.isEmptyFlask(flaskId) || (new RegExp(`(,${el})+(,0)+$`)).test("," + this.field[flaskId].join())
         },
         addEmptyFlask: function () { this.field.push(new Array(this.flask_capacity).fill(0)) },
-        arrFinish: function () { return Array.apply(0, {length: (this.n * this.m)}).map(function (x, y) { return y; }) },
         init: function () {
           this.createField();
           this.drawField();
@@ -125,16 +125,14 @@
           $('#feedback').text('step:' + patnash.stepCounter);
 
           if (el === this.lastNonZeroElFromFlask(fromFlaskId)) this.doMove(fromFlaskId, toFlaskId);
-          return;
+
           if(this.isFinish()) {
             $('#feedback').text('Finished on step ' + patnash.stepCounter);
             this.unbindHandlers();
           };
         },
         isFinish: function () {
-          var notZero = function(el) { return el != 0; };
-          var flatten = function(arr) { return arr.reduce(function(a, b){ return a.concat(b);}) };
-          return flatten(this.field).filter(notZero).join() == this.arrFinish().filter(notZero).join();
+          return this.field.every(flask => this.isMonofilledFlask(flask));
         }
       };
       patnash.init();
