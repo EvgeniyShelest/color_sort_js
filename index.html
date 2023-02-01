@@ -33,7 +33,7 @@
   <script>
     $(document).ready(function () {
       var patnash = {
-        flask_amount: 12,
+        flask_amount: 6,
         flask_capacity: 4,
         moveFromFlaskId: null,
         stepCounter: 0,
@@ -42,12 +42,10 @@
         isMonofilledFlask: function (flask) { return flask.slice(1,).every(el => el === flask[0]) },
         lastNonZeroElFromFlask: function (flaskId) {
           const nonZero = (element) => element !== 0;
-          // console.log(flaskId, this.field[flaskId])
           return this.field[flaskId].findLast(nonZero);
          },
         firstEmptyIndexFromFlask: function (flaskId) {
           const isZero = (element) => element === 0;
-          // console.log(flaskId, this.field[flaskId])
           return this.field[flaskId].findIndex(isZero);
          },
         isFitableToMoveTo: function (flaskId, el) {
@@ -99,10 +97,10 @@
             console.log(Number(id[0]), Number(id[1]));
             let flaskId = Number(id[0]);
             if (patnash.moveFromFlaskId == null) {
-              if (patnash.isEmptyFlask(flaskId)) { console.log("Empty");return;}
+              if (patnash.isEmptyFlask(flaskId)) { console.log("Empty"); return;}
               patnash.moveFromFlaskId = flaskId;
             } else {
-              if (flaskId === patnash.moveFromFlaskId) { console.log("The same flask");return;}
+              if (flaskId === patnash.moveFromFlaskId) { console.log("The same flask"); return;}
               patnash.doMove(patnash.moveFromFlaskId, flaskId);
               patnash.moveFromFlaskId = null;
             }
