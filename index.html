@@ -74,9 +74,16 @@
           const nonZero = (element) => element !== 0;
           return this.field[flaskId].findLast(nonZero);
          },
-        lastNonZeroIndexFromFlask: function (flaskId) {
+        lastNonZeroIndicesFromFlask: function (flaskId) {
           const nonZero = (element) => element !== 0;
-          return this.field[flaskId].findLastIndex(nonZero);
+          const indices = [];
+          let lastIndex = this.field[flaskId].findLastIndex(nonZero);
+          indices.push(lastIndex);
+          const el = this.field[flaskId][lastIndex];
+          while(--lastIndex >= 0 && this.field[flaskId][lastIndex] === el) {
+            indices.push(lastIndex);
+          }
+          return indices;
          },
         firstEmptyIndexFromFlask: function (flaskId) {
           const isZero = (element) => element === 0;
@@ -133,8 +140,10 @@
             if (game.moveFromFlaskId == null) {
               if (game.isEmptyFlask(flaskId)) { console.log("Empty"); return; }
               game.moveFromFlaskId = flaskId;
-              lastIndexFrom = game.lastNonZeroIndexFromFlask(flaskId);
-              $('#field td#' + flaskId + '-' + lastIndexFrom).addClass("active");
+              lastIndicesFrom = game.lastNonZeroIndicesFromFlask(flaskId);
+              lastIndicesFrom.forEach(index => {
+                $('#field td#' + flaskId + '-' + index).addClass("active");
+              });
             } else {
               if (flaskId === game.moveFromFlaskId) { console.log("The same flask"); return; }
               game.doMove(game.moveFromFlaskId, flaskId);
