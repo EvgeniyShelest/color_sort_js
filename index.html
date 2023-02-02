@@ -32,7 +32,7 @@
   <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
   <script>
     $(document).ready(function () {
-      var patnash = {
+      const game = {
         flask_amount: 6,
         flask_capacity: 4,
         moveFromFlaskId: null,
@@ -78,11 +78,11 @@
           this.addEmptyFlask();
         },
         drawField: function () {
-          var htmlString = '<table>';
-          for (var i = this.flask_capacity - 1; i >= 0; i--) {
+          let htmlString = '<table>';
+          for (let i = this.flask_capacity - 1; i >= 0; i--) {
             htmlString += '<tr>';
-            for (var j = 0; j < this.field.length; j++) {
-              var isEmpty = this.field[j][i] == 0 ? ' class=empty' : '';
+            for (let j = 0; j < this.field.length; j++) {
+              let isEmpty = this.field[j][i] == 0 ? ' class=empty' : '';
               htmlString += "<td id=" + [j, i].join('-') + isEmpty + ">" +
                   this.field[j][i] + "</td>";
             };
@@ -96,13 +96,13 @@
             let id = $(this).attr('id').split('-');
             console.log(Number(id[0]), Number(id[1]));
             let flaskId = Number(id[0]);
-            if (patnash.moveFromFlaskId == null) {
-              if (patnash.isEmptyFlask(flaskId)) { console.log("Empty"); return;}
-              patnash.moveFromFlaskId = flaskId;
+            if (game.moveFromFlaskId == null) {
+              if (game.isEmptyFlask(flaskId)) { console.log("Empty"); return; }
+              game.moveFromFlaskId = flaskId;
             } else {
-              if (flaskId === patnash.moveFromFlaskId) { console.log("The same flask"); return;}
-              patnash.doMove(patnash.moveFromFlaskId, flaskId);
-              patnash.moveFromFlaskId = null;
+              if (flaskId === game.moveFromFlaskId) { console.log("The same flask"); return; }
+              game.doMove(game.moveFromFlaskId, flaskId);
+              game.moveFromFlaskId = null;
             }
           });
         },
@@ -123,13 +123,13 @@
           this.field[toFlaskId][indexTo] = el;
           $('td#' + toFlaskId  + '-' + indexTo).removeClass('empty').text(el);
           $('td#' + fromFlaskId + '-' + indexFrom).addClass('empty').text(0);
-          patnash.stepCounter += 1;
-          $('#feedback').text('step:' + patnash.stepCounter);
+          game.stepCounter += 1;
+          $('#feedback').text('step:' + game.stepCounter);
 
           if (el === this.lastNonZeroElFromFlask(fromFlaskId)) this.doMove(fromFlaskId, toFlaskId);
 
           if(this.isFinish()) {
-            $('#feedback').text('Finished on step ' + patnash.stepCounter);
+            $('#feedback').text('Finished on step ' + game.stepCounter);
             this.unbindHandlers();
           };
         },
@@ -137,7 +137,7 @@
           return this.field.every(flask => this.isMonofilledFlask(flask));
         }
       };
-      patnash.init();
+      game.init();
     });
   </script>
 </head>
