@@ -171,6 +171,7 @@
           console.log("el:", el);
           if (!this.isFitableToMoveTo(toFlaskId, el)) {
             console.log("Unfitable");
+            $('#field td').removeClass("active");
             return;
           }
           indexFrom = this.field[fromFlaskId].findLastIndex(e => el === e);
