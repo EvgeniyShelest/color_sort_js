@@ -52,6 +52,7 @@
         moveFromFlaskId: null,
         stepCounter: 0,
         field: [],
+        moves: [],
         isEmptyFlask: function (flaskId) { return this.field[flaskId].every(el => el === 0) },
         isMonofilledFlask: function (flask) { return flask.slice(1,).every(el => el === flask[0]) },
         lastNonZeroElFromFlask: function (flaskId) {
@@ -123,6 +124,17 @@
         unbindHandlers: function () {
           $('#field td').unbind("click");
         },
+        moveBack: function () {
+          if (this.moves.length === 0) return;
+          let [[toFlaskId,indexTo],[fromFlaskId,indexFrom]] = this.moves.pop();
+          const el = this.field[fromFlaskId][indexFrom];
+          this.field[fromFlaskId][indexFrom] = 0;
+          this.field[toFlaskId][indexTo] = el;
+          $('td#' + toFlaskId  + '-' + indexTo).removeClass('empty').text(el);
+          $('td#' + fromFlaskId + '-' + indexFrom).addClass('empty').text(0);
+          game.stepCounter -= 1;
+          $('#feedback').text('step:' + game.stepCounter);
+        },
         doMove: function (fromFlaskId, toFlaskId) {
           console.log("doMove", fromFlaskId, toFlaskId);
           let el = this.lastNonZeroElFromFlask(fromFlaskId);
@@ -135,6 +147,7 @@
           indexTo = this.firstEmptyIndexFromFlask(toFlaskId);
           this.field[fromFlaskId][indexFrom] = 0;
           this.field[toFlaskId][indexTo] = el;
+          this.moves.push([[fromFlaskId,indexFrom],[toFlaskId,indexTo]]);
           $('td#' + toFlaskId  + '-' + indexTo).removeClass('empty').text(el);
           $('td#' + fromFlaskId + '-' + indexFrom).addClass('empty').text(0);
           game.stepCounter += 1;
@@ -149,9 +162,19 @@
         },
         isFinish: function () {
           return this.field.every(flask => this.isMonofilledFlask(flask));
+        },
+        copyMoves: function () {
+          navigator.clipboard.writeText(JSON.stringify(this.moves))
+            .then(() => {
+              alert("Copied!");
+            })
+            .catch(err => {
+              alert(err);
+            });
         }
       };
       game.init();
+      window.game = game;
     });
   </script>
 </head>
@@ -160,5 +183,9 @@
   <span>Each number in separate column.</span>
 <div id='field'></div>
 <div id='feedback'></div>
+<div class="action">
+  <button onclick="game.copyMoves()">Copy moves</button>
+  <button onclick="game.moveBack()"> Undo </button>
+</div>
 </body>
 </html>
