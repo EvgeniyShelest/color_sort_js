@@ -5,9 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ice cube sort (table edition)</title>
   <style>
-    #field table td.empty {
-      background-color: #3366CC;
+    body {
+      padding: 20px 0;
+      text-align: center;
       color: #3366CC;
+      font-size: 2rem;
+    }
+    #field table {
+      margin: 20px auto;
+      background-color: #3366CC;
+      border-spacing: 3px;
     }
     #field table td {
       background-color: #ffffff;
@@ -16,17 +23,24 @@
       height: 100px;
       width: 100px;
     }
-    @media screen and (max-width: 768px) {
-      #field table td {
-        height: 23vmin;
-        width: 23vmin;
-      }
-    }
-    #field table {
+    #field table td.empty {
       background-color: #3366CC;
-      border-spacing: 3px;
-      color: #3366CC;
-      font-size: 2rem;
+    }
+    @media screen and (max-width: 768px) {
+      body {
+        font-size: 1.5rem;
+      }
+      #field table {
+        border-spacing: 2px;
+      }
+      #field table td {
+        height: 10vmin;
+        width: 10vmin;
+      }
+      #describe::after {
+        content: "\a";
+        white-space: pre;
+      }
     }
   </style>
   <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
