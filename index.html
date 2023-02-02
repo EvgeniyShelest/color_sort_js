@@ -5,6 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Ice cube sort (table edition)</title>
   <style>
+    @keyframes anim {
+      0% {
+        transform: translateY(0);
+      }
+      100% {
+        transform: translateY(-15px);
+      }
+    }
     body {
       padding: 20px 0;
       text-align: center;
@@ -25,6 +33,13 @@
     }
     #field table td.empty {
       background-color: #3366CC;
+    }
+    #field table td.active {
+      animation: anim 0.5s;
+      animation-iteration-count: infinite;
+      -moz-animation-iteration-count: infinite;
+      -webkit-animation-iteration-count: infinite;
+      -o-animation-iteration-count: infinite;
     }
     @media screen and (max-width: 768px) {
       body {
@@ -58,6 +73,10 @@
         lastNonZeroElFromFlask: function (flaskId) {
           const nonZero = (element) => element !== 0;
           return this.field[flaskId].findLast(nonZero);
+         },
+        lastNonZeroIndexFromFlask: function (flaskId) {
+          const nonZero = (element) => element !== 0;
+          return this.field[flaskId].findLastIndex(nonZero);
          },
         firstEmptyIndexFromFlask: function (flaskId) {
           const isZero = (element) => element === 0;
@@ -114,6 +133,8 @@
             if (game.moveFromFlaskId == null) {
               if (game.isEmptyFlask(flaskId)) { console.log("Empty"); return; }
               game.moveFromFlaskId = flaskId;
+              lastIndexFrom = game.lastNonZeroIndexFromFlask(flaskId);
+              $('#field td#' + flaskId + '-' + lastIndexFrom).addClass("active");
             } else {
               if (flaskId === game.moveFromFlaskId) { console.log("The same flask"); return; }
               game.doMove(game.moveFromFlaskId, flaskId);
@@ -149,7 +170,7 @@
           this.field[toFlaskId][indexTo] = el;
           this.moves.push([[fromFlaskId,indexFrom],[toFlaskId,indexTo]]);
           $('td#' + toFlaskId  + '-' + indexTo).removeClass('empty').text(el);
-          $('td#' + fromFlaskId + '-' + indexFrom).addClass('empty').text(0);
+          $('td#' + fromFlaskId + '-' + indexFrom).removeClass("active").addClass('empty').text(0);
           game.stepCounter += 1;
           $('#feedback').text('step:' + game.stepCounter);
 
