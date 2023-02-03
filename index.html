@@ -93,6 +93,10 @@
           return this.isEmptyFlask(flaskId) || (new RegExp(`(,${el})+(,0)+$`)).test("," + this.field[flaskId].join())
         },
         addEmptyFlask: function () { this.field.push(new Array(this.flask_capacity).fill(0)) },
+        resetMoveFrom: function () {
+          $('#field td').removeClass("active");
+          game.moveFromFlaskId = null;
+        },
         init: function () {
           this.createField();
           this.drawField();
@@ -147,8 +151,7 @@
             } else {
               if (flaskId === game.moveFromFlaskId) {
                 console.log("The same flask");
-                $('#field td').removeClass("active");
-                game.moveFromFlaskId = null;
+                game.resetMoveFrom();
                 return;
               }
               game.doMove(game.moveFromFlaskId, flaskId);
@@ -160,6 +163,7 @@
           $('#field td').unbind("click");
         },
         moveBack: function () {
+          game.resetMoveFrom();
           if (this.moves.length === 0) return;
           let [[toFlaskId,indexTo],[fromFlaskId,indexFrom]] = this.moves.pop();
           const el = this.field[fromFlaskId][indexFrom];
