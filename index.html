@@ -34,9 +34,6 @@
       height: 100px;
       width: 100px;
     }
-    #field table td.empty {
-      background-color: var(--color-primary);
-    }
     #field table td.active {
       animation: anim 0.5s;
       animation-iteration-count: infinite;
@@ -55,10 +52,6 @@
         height: 10vmin;
         width: 10vmin;
       }
-      #describe::after {
-        content: "\a";
-        white-space: pre;
-      }
     }
   </style>
   <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
@@ -71,6 +64,7 @@
         stepCounter: 0,
         field: [],
         moves: [],
+        colors: [],
         isEmptyFlask: function (flaskId) { return this.field[flaskId].every(el => el === 0) },
         isMonofilledFlask: function (flask) { return flask.slice(1,).every(el => el === flask[0]) },
         lastNonZeroElFromFlask: function (flaskId) {
@@ -101,6 +95,7 @@
           game.moveFromFlaskId = null;
         },
         init: function () {
+          this.colors = Array.apply(0, {length: this.flask_amount + 1}).map(_=>"#"+(~~(Math.random()*2**24)).toString(16));
           this.createField();
           this.drawField();
           this.bindHandlers();
@@ -130,9 +125,9 @@
           for (let i = this.flask_capacity - 1; i >= 0; i--) {
             htmlString += '<tr>';
             for (let j = 0; j < this.field.length; j++) {
-              let isEmpty = this.field[j][i] == 0 ? ' class=empty' : '';
-              htmlString += "<td id=" + [j, i].join('-') + isEmpty + ">" +
-                  this.field[j][i] + "</td>";
+              let el = this.field[j][i];
+              let attrs = el === 0 ? '' : ` style="background-color: ${this.colors[el]}"`;
+              htmlString += "<td id=" + [j, i].join('-') + attrs + "></td>";
             };
             htmlString += '</tr>';
           };
@@ -171,8 +166,8 @@
           const el = this.field[fromFlaskId][indexFrom];
           this.field[fromFlaskId][indexFrom] = 0;
           this.field[toFlaskId][indexTo] = el;
-          $('td#' + toFlaskId  + '-' + indexTo).removeClass('empty').text(el);
-          $('td#' + fromFlaskId + '-' + indexFrom).addClass('empty').text(0);
+          $('td#' + toFlaskId  + '-' + indexTo).css("background-color", this.colors[el]);
+          $('td#' + fromFlaskId + '-' + indexFrom).css("background-color", "");
           game.stepCounter -= 1;
           $('#feedback').text('step:' + game.stepCounter);
         },
@@ -190,8 +185,8 @@
           this.field[fromFlaskId][indexFrom] = 0;
           this.field[toFlaskId][indexTo] = el;
           this.moves.push([[fromFlaskId,indexFrom],[toFlaskId,indexTo]]);
-          $('td#' + toFlaskId  + '-' + indexTo).removeClass('empty').text(el);
-          $('td#' + fromFlaskId + '-' + indexFrom).removeClass("active").addClass('empty').text(0);
+          $('td#' + toFlaskId  + '-' + indexTo).css("background-color", this.colors[el]);
+          $('td#' + fromFlaskId + '-' + indexFrom).removeClass("active").css("background-color", "");
           game.moveFromFlaskId = null;
           game.stepCounter += 1;
           $('#feedback').text('step:' + game.stepCounter);
@@ -222,8 +217,6 @@
   </script>
 </head>
 <body>
-  <span id='describe'>Sort numered ice cubes.</span>
-  <span>Each number in separate column.</span>
   <div id='field'></div>
   <div id='feedback'></div>
   <div class="action">
