@@ -145,7 +145,12 @@
                 $('#field td#' + flaskId + '-' + index).addClass("active");
               });
             } else {
-              if (flaskId === game.moveFromFlaskId) { console.log("The same flask"); return; }
+              if (flaskId === game.moveFromFlaskId) {
+                console.log("The same flask");
+                $('#field td').removeClass("active");
+                game.moveFromFlaskId = null;
+                return;
+              }
               game.doMove(game.moveFromFlaskId, flaskId);
               game.moveFromFlaskId = null;
             }
