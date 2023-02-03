@@ -13,15 +13,18 @@
         transform: translateY(-15px);
       }
     }
+    :root {
+      --color-primary: #3366CC;
+    }
     body {
       padding: 20px 0;
       text-align: center;
-      color: #3366CC;
+      color: var(--color-primary);
       font-size: 2rem;
     }
     #field table {
       margin: 20px auto;
-      background-color: #3366CC;
+      background-color: var(--color-primary);
       border-spacing: 3px;
     }
     #field table td {
@@ -32,7 +35,7 @@
       width: 100px;
     }
     #field table td.empty {
-      background-color: #3366CC;
+      background-color: var(--color-primary);
     }
     #field table td.active {
       animation: anim 0.5s;
