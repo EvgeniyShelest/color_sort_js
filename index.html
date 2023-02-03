@@ -155,7 +155,6 @@
                 return;
               }
               game.doMove(game.moveFromFlaskId, flaskId);
-              game.moveFromFlaskId = null;
             }
           });
         },
@@ -180,7 +179,7 @@
           console.log("el:", el);
           if (!this.isFitableToMoveTo(toFlaskId, el)) {
             console.log("Unfitable");
-            $('#field td').removeClass("active");
+            game.resetMoveFrom();
             return;
           }
           indexFrom = this.field[fromFlaskId].findLastIndex(e => el === e);
@@ -190,6 +189,7 @@
           this.moves.push([[fromFlaskId,indexFrom],[toFlaskId,indexTo]]);
           $('td#' + toFlaskId  + '-' + indexTo).removeClass('empty').text(el);
           $('td#' + fromFlaskId + '-' + indexFrom).removeClass("active").addClass('empty').text(0);
+          game.moveFromFlaskId = null;
           game.stepCounter += 1;
           $('#feedback').text('step:' + game.stepCounter);
 
