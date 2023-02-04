@@ -95,7 +95,7 @@
           game.moveFromFlaskId = null;
         },
         init: function () {
-          this.colors = Array.apply(0, {length: this.flask_amount + 1}).map(_=>"#"+(~~(Math.random()*2**24)).toString(16));
+          this.colors = Array.apply(0, {length: this.flask_amount + 1}).map(_=>"#"+(~~(Math.random()*2**24)).toString(16).padStart(6,0));
           this.createField();
           this.drawField();
           this.bindHandlers();
