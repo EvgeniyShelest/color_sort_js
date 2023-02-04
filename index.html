@@ -95,6 +95,13 @@
           game.moveFromFlaskId = null;
         },
         init: function () {
+          const query = window.location.search.substr(1);
+          if (query != null && query != "") {
+             const flask_amount = query.split('=')[1];
+             if (flask_amount) {
+               this.flask_amount = Number(flask_amount);
+             }
+          }
           this.colors = Array.apply(0, {length: this.flask_amount + 1}).map(_=>"#"+(~~(Math.random()*2**24)).toString(16).padStart(6,0));
           this.createField();
           this.drawField();
@@ -196,10 +203,14 @@
           if(this.isFinish()) {
             $('#feedback').text('Finished on step ' + game.stepCounter);
             this.unbindHandlers();
+            $('button#levelUp').removeAttr('disabled');
           };
         },
         isFinish: function () {
           return this.field.every(flask => this.isMonofilledFlask(flask));
+        },
+        levelUp: function () {
+          window.location.search = 'l=' + (this.flask_amount + 1);
         },
         copyMoves: function () {
           navigator.clipboard.writeText(JSON.stringify(this.moves))
@@ -222,6 +233,7 @@
   <div class="action">
     <button onclick="game.copyMoves()">Copy moves</button>
     <button onclick="game.moveBack()"> Undo </button>
+    <button id="levelUp" onclick="game.levelUp()" disabled>Next level</button>
   </div>
 </body>
 </html>
