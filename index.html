@@ -90,6 +90,11 @@
           return this.isEmptyFlask(flaskId) || (new RegExp(`(,${el})+(,0)+$`)).test("," + this.field[flaskId].join())
         },
         addEmptyFlask: function () { this.field.push(new Array(this.flask_capacity).fill(0)) },
+        addEmptyFlaskAndDraw: function () {
+          this.addEmptyFlask();
+          this.drawField();
+          this.bindHandlers();
+        },
         resetMoveFrom: function () {
           $('#field td').removeClass("active");
           game.moveFromFlaskId = null;
@@ -231,7 +236,8 @@
   <div id='field'></div>
   <div id='feedback'></div>
   <div class="action">
-    <button onclick="game.copyMoves()">Copy moves</button>
+    <!-- <button onclick="game.copyMoves()">Copy moves</button> -->
+    <button onclick="game.addEmptyFlaskAndDraw()">Add empty</button>
     <button onclick="game.moveBack()"> Undo </button>
     <button id="levelUp" onclick="game.levelUp()" disabled>Next level</button>
   </div>
