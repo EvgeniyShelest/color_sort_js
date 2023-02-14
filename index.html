@@ -53,6 +53,9 @@
         width: 10vmin;
       }
     }
+    button#addEmpty {
+      display: none;
+    }
   </style>
   <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
   <script>
@@ -112,6 +115,7 @@
           this.drawField();
           this.bindHandlers();
           $('span#level').text('Level ' + (this.flask_amount - 1));
+          if (this.flask_amount >= 10) $('button#addEmpty').show();
         },
         createField: function () {
           const arrStart = Array.apply(0, { length: this.flask_amount })
@@ -238,7 +242,7 @@
   <div id='feedback'></div>
   <div class="action">
     <!-- <button onclick="game.copyMoves()">Copy moves</button> -->
-    <button onclick="game.addEmptyFlaskAndDraw()">Add empty</button>
+    <button id="addEmpty" onclick="game.addEmptyFlaskAndDraw()">Add empty</button>
     <button onclick="game.moveBack()"> Undo </button>
     <button id="levelUp" onclick="game.levelUp()" disabled>Next level</button>
   </div>
