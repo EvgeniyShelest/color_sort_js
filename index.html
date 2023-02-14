@@ -111,6 +111,7 @@
           this.createField();
           this.drawField();
           this.bindHandlers();
+          $('span#level').text('Level ' + (this.flask_amount - 1));
         },
         createField: function () {
           const arrStart = Array.apply(0, { length: this.flask_amount })
@@ -232,6 +233,7 @@
   </script>
 </head>
 <body>
+  <span id="level">Level 1</span>
   <div id='field'></div>
   <div id='feedback'></div>
   <div class="action">
